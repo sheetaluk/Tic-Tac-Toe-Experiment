@@ -1,0 +1,86 @@
+@colorWhite: white;
+@colorGrey: grey;
+@colorBone: #FFFFCC;
+@colorVeryDarkGrey: #454545;
+@colorLightGoldenRod: #FFEC8B;
+
+body
+{
+  #gameDiv
+  {
+    h1
+    {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    h4
+    { 
+      text-align: center;
+      margin: 0px 0px 30px 2px;
+      color: @colorGrey;
+    }
+
+    #noteInstruction
+    {
+      text-align: center;
+      color: @colorGrey;
+      margin: 10px;
+    }
+
+    #gameBoardDiv
+    {
+      padding: 5px;
+      background-color: @colorBone;
+      width: 25%;
+      margin-left: 37%;
+      border: 1px solid @colorVeryDarkGrey;
+      border-radius: 5px;     
+
+      #gameBoardTable
+      {
+        margin: auto;
+
+        td
+        {
+          cursor: pointer;
+          height: 100px;
+          width: 100px;
+          background-color: @colorWhite;
+          border: 3px solid @colorVeryDarkGrey;
+          border-radius: 7px;
+        }
+
+        td:hover
+        {
+          background-color: @colorLightGoldenRod;
+        }
+
+        .userImage
+        {
+          background: url("../img/user.png") no-repeat center center;
+        }
+
+        .myImage
+        {
+          background: url("../img/chilli.png") no-repeat center center;
+        }
+
+        .user, .me
+        {
+          cursor: default;
+        }
+      }
+    }
+    .gameButton
+    {
+      text-align: center;
+    }
+
+
+    #gameResetDiv
+    {
+      margin-left: 45.5%;
+    }
+  }
+}

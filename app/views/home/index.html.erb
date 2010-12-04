@@ -1,0 +1,303 @@
+<div id="gameDiv">
+  <h1>   
+    Tic Tac Toe
+  </h1>
+  <h4>  
+    { sheetaluk@gmail.com }
+  </h4>
+  <div id="gameBoardDiv">
+    <table id="gameBoardTable">
+      <tr>
+        <td class="win1 win4 win7">
+        </td>
+        <td class="win1 win5">
+        </td>
+        <td class="win1 win6 win8">
+        </td>
+      </tr>
+      <tr>
+        <td class="win2 win4">
+        </td>
+        <td class="win2 win5 win7 win8">
+        </td>
+        <td class="win2 win6">
+        </td>
+      </tr>
+      <tr>
+        <td class="win3 win4 win8">
+        </td>
+        <td class="win3 win5">
+        </td>
+        <td class="win3 win6 win7">
+        </td>
+      </tr>  
+    </table>
+  </div>
+  <div id="noteInstruction">
+    I start first. To continue, click on the one of the empty cells.
+  </div>
+  <div id="gameResetDiv">
+    <input 
+      type="button" 
+      value="Reset Game Board" 
+      id="gameResetButton" 
+      class="gameButton" \>
+  </div>
+</div>
+<div id="notification" class="ui-dialog-content">
+</div>
+<script type="text/javascript">
+  
+  function recordUserMove(cellId)
+  {
+    $("#"+cellId).addClass("user");
+    $("#"+cellId).addClass("userImage");
+  }
+
+
+  function recordMyMove()
+  {
+    var winMove = getPossibleWinMove("me");
+    if(winMove)
+    {
+      printMove(winMove);
+    }
+    else
+    {
+      var dangerMove = getPossibleWinMove("user");
+      if(dangerMove)
+      {
+        printMove(dangerMove);  
+      }        
+      else
+      {
+        var allEmptyNeighbours = new Array();
+        allEmptyNeighbours = getAllEmptyNeighbours();
+        makeMyMove(allEmptyNeighbours);
+      }
+    }
+  }
+
+
+  function getPossibleWinMove(who)
+  {
+    if(who == "user")
+      var theOther = "me";
+    else
+      var theOther = "user";
+
+    for(i=1; i<=8; i++)
+    {
+      var win = 0;
+      var winMove = 0;
+      $(".win"+i).each(function()
+      {
+        if($(this).hasClass(who))
+        {              
+          if(++win == 2)
+          {
+            winMove = $(".win"+i+":not(."+who+")").attr('id');
+            if($("#"+winMove).hasClass(theOther))
+            {
+              winMove = 0;
+            }
+            else
+            {
+              return winMove;
+            }
+          }
+        }
+      });
+      if(winMove != 0)
+        return winMove;
+    }
+  }
+
+
+  function determineWin(who)
+  { 
+    for(var i=1; i<=8; i++)
+    {
+      var win = 0;
+       
+      $(".win"+i).each(function()
+      {
+        if($(this).hasClass(who))
+        {              
+          if(++win == 3)
+          notify("Game Over",who);
+        }
+      });
+    }
+  }
+
+
+  function makeMyMove(allEmptyNeighbours)
+  {
+    var randIndex = Math.floor(Math.random()*allEmptyNeighbours.length);
+    printMove(allEmptyNeighbours[randIndex]);
+  }
+
+
+  function printMove(move)
+  {
+    $("#"+move).addClass("me");
+    $("#"+move).addClass("myImage");
+  }
+
+
+  function getAllEmptyNeighbours()
+  {
+    var allMyNeighbours = new Array();
+    allMyNeighbours = getAllMyNeighbours();
+    return getMyEmptyNeighbours(allMyNeighbours); 
+  }
+
+
+  function getMyEmptyNeighbours(allMyNeighbours)
+  { 
+    var myEmptyNeighbours = new Array();
+    for(var i=0; i<allMyNeighbours.length; i++)
+    {
+      if(
+        ($("#"+allMyNeighbours[i]).hasClass("user"))
+        || ($("#"+allMyNeighbours[i]).hasClass("me")))
+        continue;
+      else
+        myEmptyNeighbours[myEmptyNeighbours.length] = allMyNeighbours[i];           
+    }
+    return myEmptyNeighbours;
+  }
+
+
+  function getAllMyNeighbours()
+  {
+    var neighbours = new Array();
+    $(".me").each(function(index)
+    {
+      var tempNeighbours = getNeighbours($(this).attr("id"));
+      for(var i=0; i<tempNeighbours.length; i++)
+        neighbours[neighbours.length] = tempNeighbours[i];
+    });
+    return neighbours;
+  }
+
+
+  function getNeighbours(cell)
+  {
+    switch(cell)
+    {
+      case '1':
+        return new Array(2, 4, 5);
+        break;
+      case '2': 
+        return new Array(1, 3, 5);
+        break;
+      case '3': 
+        return new Array(2, 5, 6);
+        break;
+      case '4': 
+        return new Array(1, 5, 7);
+        break;
+      case '5': 
+        return new Array(1, 2, 3, 4, 6, 7, 8, 9);
+        break;
+      case '6':
+        return new Array(3, 5, 9);
+        break;
+      case '7':
+        return new Array(4, 5, 8);
+        break;
+      case '8':
+        return new Array(5, 7, 9);
+        break;
+      case '9':
+        return new Array(5, 6, 8);
+        break;
+      default:
+        notify("Error","Oh no! A cell of that index does not exist.");  
+        break;
+    }
+  }
+
+  function resetGameBoard()
+  {
+    $("table#gameBoardTable td").each(function(index)
+    {
+      $(this).removeClass("user");
+      $(this).removeClass("me");
+      $(this).removeClass("userImage");
+      $(this).removeClass("myImage"); 
+
+      $(this).html("");
+    });
+
+    $("#"+Math.floor((Math.random()*9)+1))
+      .addClass("me").addClass("myImage");
+  }
+
+  function notify(title, message)
+  {          
+    if(title == "Game Over")
+    {
+      var who = message;
+      switch(who)
+      {
+        case "user":
+          message = "Look at that. You won.";
+          break;
+        case "me":
+          message = "Hello Kitty. I won.";
+          break;
+        default:
+          break;
+      }
+    }
+    $("#notification").attr("title",title);
+    $("#notification").html(message);
+    $("#notification").dialog(
+    {
+      modal: true,
+      height:120,
+      close: function(event,ui)
+      {
+        $("#notification").dialog("destroy");
+        if(title == "Game Over")
+          resetGameBoard();
+      },
+    });
+  }
+
+  $(document).ready(function()
+  {        
+    //assign data-ids of column numbers to each cell
+    $("table#gameBoardTable td").each(function(index)
+    {
+      $(this).attr("id",++index)
+      $(this).addClass("gameCell");
+    });
+
+    $("#gameResetButton").live('click',function()
+    {
+      resetGameBoard();
+    });
+
+
+    $("table#gameBoardTable td").click(function()
+    {
+      if($(this).hasClass("user")||$(this).hasClass("me"))
+      {
+        notify("Huh?","You must click on an empty cell.");
+      }
+      else
+      {
+        recordUserMove($(this).attr("id"));
+        determineWin("user");
+        recordMyMove();
+        determineWin("me");
+      }
+    });
+
+    resetGameBoard();        
+  });
+</script>
